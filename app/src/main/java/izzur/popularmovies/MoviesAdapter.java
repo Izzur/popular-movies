@@ -1,36 +1,75 @@
 package izzur.popularmovies;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+
+import com.squareup.picasso.Picasso;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 /**
- * Created by user on 7/10/17.
+ * Adapter for Movies
  */
 
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesViewHolder> {
 
     private static final String TAG = MoviesAdapter.class.getSimpleName();
     private static int viewHolderCount;
-    private final ListItemClickListener mOnClickListener;
+    private Context mContext;
+    //private final ListItemClickListener mOnClickListener;
     private int mNumberItems;
+    private JSONArray data;
 
-    public MoviesAdapter(int numberOfItems, ListItemClickListener listener) {
+    public MoviesAdapter(Context context, int numberOfItems, JSONArray jsonArray) {
+        mContext = context;
         mNumberItems = numberOfItems;
-        mOnClickListener = listener;
+        //mOnClickListener = listener;
+        data = jsonArray;
         viewHolderCount = 0;
+    }
+
+    public void updateData(JSONArray jsonArray) {
+        data = jsonArray;
+        this.notifyDataSetChanged();
     }
 
     @Override
     public MoviesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return null;
+        LayoutInflater inflater = LayoutInflater.from(mContext);
+        View v = inflater.inflate(R.layout.movie_list_item, parent, false);
+        return new MoviesViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(MoviesViewHolder holder, int position) {
-        Log.d(TAG, "#" + position);
-        holder.bind(position);
+    public void onBindViewHolder(MoviesViewHolder holder, final int position) {
+        String imgLink = null;
+        if (data != null)
+            try {
+                imgLink = "http://image.tmdb.org/t/p/w185" + data.getJSONObject(position).getString("poster_path");
+                Picasso.with(mContext).load(imgLink).into(holder.posterImage);
+                holder.posterImage
+                        .setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                //Toast.makeText(mContext, "Image clicked", Toast.LENGTH_SHORT).show();
+                                Intent i = new Intent(mContext.getApplicationContext(), DetailActivity.class);
+                                try {
+                                    i.putExtra("dataJSON", data.getJSONObject(position).toString());
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                mContext.startActivity(i);
+                            }
+                        });
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
     }
 
     @Override
@@ -44,20 +83,17 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
 
     class MoviesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        public ImageView posterImage;
+
         public MoviesViewHolder(View itemView) {
             super(itemView);
-            // TODO : something
             itemView.setOnClickListener(this);
-        }
-
-        void bind(int listIndex) {
-
+            posterImage = (ImageView) itemView.findViewById(R.id.iv_poster_image);
         }
 
         @Override
         public void onClick(View v) {
-            int clickedPosition = getAdapterPosition();
-            mOnClickListener.onListItemClick(clickedPosition);
+            //int clickedPosition = getAdapterPosition();
         }
     }
 }
