@@ -11,22 +11,28 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class DetailActivity extends AppCompatActivity {
 
-    private TextView mTitle, mOverview, mDate, mVote;
-    private ImageView mPoster;
+    @BindView(R.id.tv_title)
+    TextView mTitle;
+    @BindView(R.id.tv_overview)
+    TextView mOverview;
+    @BindView(R.id.tv_release_date)
+    TextView mDate;
+    @BindView(R.id.tv_vote_average)
+    TextView mVote;
+    @BindView(R.id.iv_detail_image)
+    ImageView mPoster;
     private JSONObject dataMovie;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-
-        mTitle = (TextView) findViewById(R.id.tv_title);
-        mOverview = (TextView) findViewById(R.id.tv_overview);
-        mDate = (TextView) findViewById(R.id.tv_release_date);
-        mVote = (TextView) findViewById(R.id.tv_vote_average);
-        mPoster = (ImageView) findViewById(R.id.iv_detail_image);
+        ButterKnife.bind(this);
 
         Intent i = getIntent();
         String imgLink;

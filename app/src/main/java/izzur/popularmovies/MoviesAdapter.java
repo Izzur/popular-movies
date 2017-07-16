@@ -13,6 +13,9 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Adapter for Movies
  */
@@ -83,12 +86,13 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
 
     class MoviesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        public ImageView posterImage;
+        @BindView(R.id.iv_poster_image)
+        ImageView posterImage;
 
         public MoviesViewHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
-            posterImage = (ImageView) itemView.findViewById(R.id.iv_poster_image);
+            ButterKnife.bind(this, itemView);
         }
 
         @Override

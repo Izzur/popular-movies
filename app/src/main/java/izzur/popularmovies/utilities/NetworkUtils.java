@@ -3,11 +3,12 @@ package izzur.popularmovies.utilities;
 import android.net.Uri;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Scanner;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * These utilities will be used to communicate with the network.
@@ -41,21 +42,13 @@ public class NetworkUtils {
     }
 
     public static String getResponseFromHttpUrl(URL url) throws IOException {
-        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-        try {
-            InputStream in = urlConnection.getInputStream();
+        OkHttpClient client = new OkHttpClient();
 
-            Scanner scanner = new Scanner(in);
-            scanner.useDelimiter("\\A");
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
 
-            boolean hasInput = scanner.hasNext();
-            if (hasInput) {
-                return scanner.next();
-            } else {
-                return null;
-            }
-        } finally {
-            urlConnection.disconnect();
-        }
+        Response response = client.newCall(request).execute();
+        return response.body().string();
     }
 }

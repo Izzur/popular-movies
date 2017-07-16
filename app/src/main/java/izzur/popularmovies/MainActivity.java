@@ -8,6 +8,9 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import com.novoda.merlin.MerlinsBeard;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,27 +19,32 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.URL;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import izzur.popularmovies.utilities.NetworkUtils;
 
 public class MainActivity extends AppCompatActivity {
 
     final static String TAG = MainActivity.class.getSimpleName();
     final static String THEMOVIEDB_BASE_URL = "https://api.themoviedb.org/3/movie";
-    final static String IMAGE_BASE_URL = "http://image.tmdb.org/t/p";
     final private static String API_KEY = BuildConfig.API_KEY;
+    @BindView(R.id.rv_grid)
+    RecyclerView rViewMain;
+    private String sortState = "popular";
     private JSONObject dataMovie = null;
     private JSONArray arrayMovie = null;
-    private RecyclerView rViewMain;
     private GridLayoutManager gridLayoutManager;
     private MoviesAdapter moviesAdapter;
+    private MerlinsBeard merlinsBeard;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        rViewMain = (RecyclerView) findViewById(R.id.rv_grid);
+        ButterKnife.bind(this);
 
-        makeQuery("popular");
+        merlinsBeard = MerlinsBeard.from(this);
+        makeQuery(sortState);
 
         gridLayoutManager = new GridLayoutManager(MainActivity.this, 2);
         rViewMain.setHasFixedSize(true);
@@ -46,9 +54,14 @@ public class MainActivity extends AppCompatActivity {
         rViewMain.setAdapter(moviesAdapter);
     }
 
+
     private void makeQuery(String param) {
-        URL queryUrl = NetworkUtils.buildUrl(THEMOVIEDB_BASE_URL, param, null, API_KEY);
-        new QueryTask().execute(queryUrl);
+        if (merlinsBeard.isConnected()) {
+            URL queryUrl = NetworkUtils.buildUrl(THEMOVIEDB_BASE_URL, param, null, API_KEY);
+            new QueryTask().execute(queryUrl);
+        } else {
+            Toast.makeText(this, "No internet connection", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -63,10 +76,12 @@ public class MainActivity extends AppCompatActivity {
 
         switch (itemId) {
             case R.id.sort_popular:
-                makeQuery("popular");
+                sortState = "popular";
+                makeQuery(sortState);
                 return true;
             case R.id.sort_rating:
-                makeQuery("top_rated");
+                sortState = "top_rated";
+                makeQuery(sortState);
                 return true;
         }
 
