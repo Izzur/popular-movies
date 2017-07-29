@@ -9,7 +9,8 @@
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        tools:text="The movie title will be shown here" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -24,20 +25,29 @@
             android:id="@+id/tv_release_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/iv_detail_image" />
+            android:layout_toEndOf="@id/iv_detail_image"
+            tools:text="Da-te-date" />
 
         <TextView
             android:id="@+id/tv_vote_average"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignStart="@id/tv_release_date"
-            android:layout_below="@id/tv_release_date" />
+            android:layout_below="@id/tv_release_date"
+            tools:text="Rate here" />
 
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/tv_overview"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="100dp" />
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/tv_overview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="Movie detail overview is here ablablablablablablabla" />
+
+    </ScrollView>
 
 </LinearLayout>

@@ -36,16 +36,17 @@ public class DetailActivity extends AppCompatActivity {
 
         Intent i = getIntent();
         String imgLink;
-        try {
-            dataMovie = new JSONObject(i.getStringExtra("dataJSON"));
-            mTitle.setText(dataMovie.getString("title"));
-            mOverview.setText(dataMovie.getString("overview"));
-            mDate.setText(dataMovie.getString("release_date"));
-            mVote.setText(dataMovie.getString("vote_average"));
-            imgLink = "http://image.tmdb.org/t/p/w185" + dataMovie.getString("poster_path");
-            Picasso.with(this).load(imgLink).into(mPoster);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        if (i.getExtras() != null)
+            try {
+                dataMovie = new JSONObject(i.getStringExtra("dataJSON"));
+                mTitle.setText(dataMovie.getString("title"));
+                mOverview.setText(dataMovie.getString("overview"));
+                mDate.setText(dataMovie.getString("release_date"));
+                mVote.setText(dataMovie.getString("vote_average"));
+                imgLink = "http://image.tmdb.org/t/p/w185" + dataMovie.getString("poster_path");
+                Picasso.with(this).load(imgLink).into(mPoster);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
     }
 }
